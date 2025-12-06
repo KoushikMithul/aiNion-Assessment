@@ -7,6 +7,47 @@ from typing import List, Dict, Any
 from datetime import datetime, timedelta
 
 
+# Mock project database for consistent knowledge retrieval
+PROJECT_DB = {
+    "PRJ-ALPHA": {
+        "release_date": "Dec 15, 2025",
+        "code_freeze": "Dec 10, 2025",
+        "days_remaining": 9,
+        "progress": 70,
+        "capacity": 85,
+        "eng_manager": "Alex Kim",
+        "tech_lead": "David Park"
+    },
+    "PRJ-BETA": {
+        "release_date": "Jan 10, 2026",
+        "code_freeze": "Jan 5, 2026",
+        "days_remaining": 35,
+        "progress": 65,
+        "capacity": 80,
+        "eng_manager": "Sarah Johnson",
+        "tech_lead": "Emily Zhang"
+    },
+    "PRJ-GAMMA": {
+        "release_date": "Jan 20, 2026",
+        "code_freeze": "Jan 15, 2026",
+        "days_remaining": 45,
+        "progress": 55,
+        "capacity": 75,
+        "eng_manager": "Mike Chen",
+        "tech_lead": "Robert Liu"
+    },
+    "PRJ-DELTA": {
+        "release_date": "Feb 1, 2026",
+        "code_freeze": "Jan 25, 2026",
+        "days_remaining": 57,
+        "progress": 40,
+        "capacity": 70,
+        "eng_manager": "Lisa Wong",
+        "tech_lead": "James Park"
+    }
+}
+
+
 class L3AgentExecutor:
     """Base class for L3 agent execution"""
     
@@ -130,8 +171,21 @@ class KnowledgeRetrieval(L3AgentExecutor):
     """Retrieves context from knowledge base"""
     
     def execute(self) -> List[str]:
-        # Simulate knowledge retrieval with dummy project data
-        if self.project:
+        # Check if project exists in mock database
+        if self.project and self.project in PROJECT_DB:
+            data = PROJECT_DB[self.project]
+            return [
+                f"Project: {self.project}",
+                f"Current Release Date: {data['release_date']}",
+                f"Days Remaining: {data['days_remaining']}",
+                f"Code Freeze: {data['code_freeze']}",
+                f"Current Progress: {data['progress']}%",
+                f"Team Capacity: {data['capacity']}% utilized",
+                f"Engineering Manager: {data['eng_manager']}",
+                f"Tech Lead: {data['tech_lead']}",
+            ]
+        elif self.project:
+            # Project not in database, generate random data
             return [
                 f"Project: {self.project}",
                 f"Current Release Date: {self.generate_random_date(30)}",

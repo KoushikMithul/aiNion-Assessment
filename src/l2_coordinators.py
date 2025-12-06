@@ -73,6 +73,15 @@ class TrackingExecutionCoordinator(L2Coordinator):
             subtask.status = TaskStatus.COMPLETED
             task.subtasks.append(subtask)
         
+        else:
+            # Fallback if L1 purpose is unclear
+            print(f"Warning: L2:TRACKING_EXECUTION could not map purpose '{task.purpose}' to a specific L3 agent.")
+            subtask = self._create_subtask(task.task_id, "action_item_extraction", "Fallback: attempt extraction")
+            executor = ActionItemExtraction(message_content, project)
+            subtask.output = executor.execute()
+            subtask.status = TaskStatus.COMPLETED
+            task.subtasks.append(subtask)
+        
         task.status = TaskStatus.COMPLETED
         return task
     
@@ -127,6 +136,15 @@ class CommunicationCollaborationCoordinator(L2Coordinator):
         elif "meeting" in purpose_lower:
             subtask = self._create_subtask(task.task_id, "meeting_attendance", "Process meeting")
             executor = MeetingAttendance(message_content, project)
+            subtask.output = executor.execute()
+            subtask.status = TaskStatus.COMPLETED
+            task.subtasks.append(subtask)
+        
+        else:
+            # Fallback if L1 purpose is unclear
+            print(f"Warning: L2:COMMUNICATION_COLLABORATION could not map purpose '{task.purpose}' to a specific L3 agent.")
+            subtask = self._create_subtask(task.task_id, "qna", "Fallback: general acknowledgment")
+            executor = QnA(message_content, project, context, self.gemini_client)
             subtask.output = executor.execute()
             subtask.status = TaskStatus.COMPLETED
             task.subtasks.append(subtask)

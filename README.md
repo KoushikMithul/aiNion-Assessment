@@ -23,7 +23,8 @@ A sophisticated three-tier AI orchestration system that processes messages throu
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- **Python 3.9 or higher** (required for pydantic and type hints)
+- pip (Python package manager)
 - Google Gemini API key (get free at https://makersuite.google.com/app/apikey)
 
 ### Installation
@@ -135,7 +136,42 @@ Input messages should be JSON files with the following structure:
 7. Results flow back up through the hierarchy
 8. **Output Formatter** generates the orchestration map
 
-## Project Structure
+### Architecture Diagram
+
+```mermaid
+graph TD
+    User[User Input] --> L1[L1 Orchestrator]
+    L1 -->|Delegate| L2_Track[L2: TRACKING_EXECUTION]
+    L1 -->|Delegate| L2_Comm[L2: COMMUNICATION_COLLABORATION]
+    L1 -->|Delegate| L2_Learn[L2: LEARNING_IMPROVEMENT]
+    L1 -->|Direct Access| L3_Cross[Cross-Cutting Agents]
+    
+    L2_Track -->|Coordinate| L3_Risk[L3: Risk Extraction]
+    L2_Track -->|Coordinate| L3_Action[L3: Action Item Extraction]
+    L2_Track -->|Coordinate| L3_Issue[L3: Issue Extraction]
+    L2_Track -->|Coordinate| L3_Decision[L3: Decision Extraction]
+    
+    L2_Comm -->|Coordinate| L3_QnA[L3: Q&A]
+    L2_Comm -->|Coordinate| L3_Delivery[L3: Message Delivery]
+    L2_Comm -->|Coordinate| L3_Report[L3: Report Generation]
+    
+    L2_Learn -->|Coordinate| L3_Instruction[L3: Instruction Learning]
+    
+    L3_Cross -->|Available to All| L3_Knowledge[L3: Knowledge Retrieval]
+    L3_Cross -->|Available to All| L3_Eval[L3: Evaluation]
+    
+    classDef l1 fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef l2 fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef l3 fill:#dfd,stroke:#333,stroke-width:2px;
+    classDef cross fill:#ffd,stroke:#333,stroke-width:2px;
+    
+    class L1 l1;
+    class L2_Track,L2_Comm,L2_Learn l2;
+    class L3_Risk,L3_Action,L3_Issue,L3_Decision,L3_QnA,L3_Delivery,L3_Report,L3_Instruction l3;
+    class L3_Cross,L3_Knowledge,L3_Eval cross;
+```
+
+## 📁 Project Structure
 
 ```
 Assessment/
