@@ -25,7 +25,7 @@ A sophisticated three-tier AI orchestration system that processes messages throu
 
 - **Python 3.9 or higher** (required for pydantic and type hints)
 - pip (Python package manager)
-- Google Gemini API key (get free at https://makersuite.google.com/app/apikey)
+- Google Gemini API key
 
 ### Installation
 
@@ -197,8 +197,6 @@ Assessment/
 ├── .env.example                     # Environment variables template
 ├── .env                             # Your actual API key (not tracked in git)
 ├── .gitignore                       # Git ignore rules
-├── assessment_requirements.txt      # Extracted requirements from PDF
-├── Peeku-Nion Orchestration Internship Assessment.pdf  # Original assessment
 ├── src/
 │   ├── __init__.py                  # Package initializer
 │   ├── models.py                    # Data models (InputMessage, Task, etc.)
@@ -999,49 +997,26 @@ Output:
 ## ✨ Key Features
 
 ### AI-Enhanced (with Gemini API)
-- 🧠 **Intelligent intent recognition** - AI analyzes sender role, content, and context
-- 💬 **Natural language responses** - Human-like, conversational answers
-- 🎯 **Context-aware reasoning** - Understands urgency and nuance
-- 📊 **Smart gap detection** - Identifies what information is missing
+- **Intelligent intent recognition** - AI analyzes sender role, content, and context
+- **Natural language responses** - Human-like, conversational answers
+- **Context-aware reasoning** - Understands urgency and nuance
+- **Smart gap detection** - Identifies what information is missing
 
 ### Core Capabilities
-- ✅ Three-tier orchestration (L1 → L2 → L3)
-- ✅ Visibility rules enforcement (L1 can't see L3 directly)
-- ✅ Dependency management between tasks
-- ✅ Gap-aware responses (acknowledges what's known/unknown)
-- ✅ 14+ specialized agents
-- ✅ Cross-cutting agents accessible to all layers
-- ✅ Structured output formatting
-- ✅ **Rule-based fallback** (works without API key)
-
-## 🐛 Troubleshooting
-
-### API Key Issues
-
-**Check if API key is set:**
-```bash
-echo $GOOGLE_API_KEY
-# Or check .env file:
-cat .env
-```
+- Three-tier orchestration (L1 → L2 → L3)
+- Visibility rules enforcement (L1 can't see L3 directly)
+- Dependency management between tasks
+- Gap-aware responses (acknowledges what's known/unknown)
+- 14+ specialized agents
+- Cross-cutting agents accessible to all layers
+- Structured output formatting
+- **Rule-based fallback** (works without API key)
 
 **Common Issues:**
 
 1. **"GOOGLE_API_KEY not found"**
    - Create `.env` file with: `GOOGLE_API_KEY=your_key_here`
    - Or export it: `export GOOGLE_API_KEY='your_key_here'`
-
-2. **"404 models/... is not found"**
-   - Already fixed! Using `models/gemini-2.0-flash`
-   - System will fall back to rule-based reasoning
-
-3. **Import errors**
-   - Run: `pip install -r requirements.txt`
-   - Make sure you're in the Assessment directory
-
-4. **System uses rule-based reasoning even with API key**
-   - Check API key validity at https://makersuite.google.com/app/apikey
-   - Verify key is correctly set in .env or environment
 
 ### How to Tell if API is Working
 
@@ -1057,11 +1032,3 @@ cat .env
 Warning: GOOGLE_API_KEY not found...
 [L1 Reasoning] Rule-based analysis (API not configured)
 ```
-
-## License
-
-This project is created for the Nion Orchestration Internship Assessment.
-
-## Author
-
-Created as part of the Nion internship assessment.
