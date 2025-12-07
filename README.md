@@ -2,6 +2,8 @@
 
 A sophisticated three-tier AI orchestration system that processes messages through L1 → L2 → L3 architecture to track action items, risks, issues, and decisions across projects. Features **Google Gemini AI integration** for intelligent reasoning and natural language responses.
 
+**🔗 GitHub Repository:** https://github.com/KoushikMithul/aiNion-Assessment
+
 ## 🎯 Architecture
 
 ### Three-Tier System
