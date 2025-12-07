@@ -1,0 +1,123 @@
+Generated: 2025-12-07 13:20:09
+Input: test_cases/test_case_3.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-103
+From: Mike Johnson (VP Engineering)
+Project: PRJ-GAMMA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from request
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Extract risks from request
+
+[TASK-003] → L2:TRACKING_EXECUTION
+Purpose: Extract decision needed
+
+[TASK-004] → L3:knowledge_retrieval
+Purpose: Retrieve project context and timeline
+
+[TASK-005] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate gap-aware response
+Depends On: TASK-001, TASK-002, TASK-003, TASK-004
+
+[TASK-006] → L3:evaluation
+Purpose: Evaluate response before sending
+Depends On: TASK-005
+
+[TASK-007] → L2:COMMUNICATION_COLLABORATION
+Purpose: Send response to sender
+Depends On: TASK-006
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:TRACKING_EXECUTION
+└─▶ [TASK-001-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Extract from message: fix related task"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:risk_extraction
+    Status: COMPLETED
+    Output:
+    • RISK-001: "Potential communication gap or unclear requirements"
+      Likelihood: LOW | Impact: MEDIUM
+
+[TASK-003] L2:TRACKING_EXECUTION
+└─▶ [TASK-003-A] L3:decision_extraction
+    Status: COMPLETED
+    Output:
+    • DEC-001: "Decision needed: should we scenario"
+      Decision Maker: ? | Status: PENDING
+    • DEC-002: "Decision needed: prioritize scenario"
+      Decision Maker: ? | Status: PENDING
+
+[TASK-004] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Project: PRJ-GAMMA
+• Current Release Date: Jan 20, 2026
+• Days Remaining: 45
+• Code Freeze: Jan 15, 2026
+• Current Progress: 55%
+• Team Capacity: 75% utilized
+• Engineering Manager: Mike Chen
+• Tech Lead: Robert Liu
+
+[TASK-005] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-005-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Regarding your question:
+    • 
+    • WHAT I KNOW:
+    • Project: PRJ-GAMMA
+    • Current Release Date: Jan 20, 2026
+    • Days Remaining: 45
+    • Code Freeze: Jan 15, 2026
+    • Current Progress: 55%
+    • Team Capacity: 75% utilized
+    • Engineering Manager: Mike Chen
+    • Tech Lead: Robert Liu
+    • 
+    • WHAT I'VE LOGGED:
+    • 1 action item extracted and tracked
+    • 1 risk identified and flagged
+    • 2 decisions pending approval
+    • 
+    • WHAT I NEED:
+    • Additional context from relevant stakeholders
+    • Clarification on specific requirements or constraints
+    • Technical feasibility assessment from Engineering team
+    • 
+    • I will provide a more complete answer once I have the above information."
+
+[TASK-006] L3:evaluation (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Relevance: PASS
+• Accuracy: PASS
+• Tone: PASS
+• Gaps Acknowledged: PASS
+• Result: APPROVED
+
+[TASK-007] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-007-A] L3:message_delivery
+    Status: COMPLETED
+    Output:
+    • Channel: email
+    • Recipient: Mike Johnson
+    • Delivery Status: SENT
+
+======================================================================

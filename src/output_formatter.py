@@ -61,7 +61,11 @@ class OutputFormatter:
             if subtask.output:
                 lines.append("    Output:")
                 for output_line in subtask.output:
-                    lines.append(f"    • {output_line}")
+                    # Check if line already starts with a bullet
+                    if output_line.strip().startswith("•"):
+                        lines.append(f"    {output_line}")
+                    else:
+                        lines.append(f"    • {output_line}")
         
         return lines
     
@@ -73,6 +77,10 @@ class OutputFormatter:
         if task.output:
             lines.append("Output:")
             for output_line in task.output:
-                lines.append(f"• {output_line}")
+                # Check if line already starts with a bullet
+                if output_line.strip().startswith("•"):
+                    lines.append(f"{output_line}")
+                else:
+                    lines.append(f"• {output_line}")
         
         return lines

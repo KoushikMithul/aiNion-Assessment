@@ -1,0 +1,48 @@
+Generated: 2025-12-07 13:20:10
+Input: test_cases/test_case_6.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-106
+From: Random User (Unknown)
+Project: N/A
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from message
+
+[TASK-002] → L3:knowledge_retrieval
+Purpose: Retrieve project context
+
+[TASK-003] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate acknowledgment response
+Depends On: TASK-001, TASK-002
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:TRACKING_EXECUTION
+└─▶ [TASK-001-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-002] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• No project context available
+• Unable to retrieve specific project details
+
+[TASK-003] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-003-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Message acknowledged and processed."
+
+======================================================================

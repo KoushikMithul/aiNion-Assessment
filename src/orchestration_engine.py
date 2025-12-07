@@ -109,16 +109,24 @@ class OrchestrationEngine:
             if dep_id in task_outputs:
                 dep_task = task_outputs[dep_id]
                 
+                # If it's a cross-cutting agent (knowledge_retrieval), always add to context
+                if dep_task.target_agent == "L3:knowledge_retrieval":
+                    context["knowledge"] = dep_task.output
                 # Store specific outputs based on task type
-                if "action item" in dep_task.purpose.lower():
+                elif "action item" in dep_task.purpose.lower():
                     context["action_items"] = dep_task.subtasks[0].output if dep_task.subtasks else []
                 elif "risk" in dep_task.purpose.lower():
                     context["risks"] = dep_task.subtasks[0].output if dep_task.subtasks else []
+                elif "issue" in dep_task.purpose.lower():
+                    context["issues"] = dep_task.subtasks[0].output if dep_task.subtasks else []
                 elif "decision" in dep_task.purpose.lower():
                     context["decisions"] = dep_task.subtasks[0].output if dep_task.subtasks else []
-                elif "knowledge" in dep_task.purpose.lower():
+                elif "knowledge" in dep_task.target_agent.lower() or "context" in dep_task.purpose.lower():
                     context["knowledge"] = dep_task.output
                 elif "response" in dep_task.purpose.lower():
                     context["response"] = dep_task.subtasks[0].output if dep_task.subtasks else []
+                elif "meeting" in dep_task.purpose.lower():
+                    # Store meeting attendance output for summary reports
+                    context["meeting_info"] = dep_task.subtasks[0].output if dep_task.subtasks else []
         
         return context

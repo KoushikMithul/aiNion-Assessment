@@ -107,7 +107,19 @@ class CommunicationCollaborationCoordinator(L2Coordinator):
         context = context or {}
         purpose_lower = task.purpose.lower()
         
-        if "response" in purpose_lower or "answer" in purpose_lower or "formulate" in purpose_lower:
+        if "send" in purpose_lower or "deliver" in purpose_lower:
+            subtask = self._create_subtask(task.task_id, "message_delivery", "Send message")
+            # Get sender info from context
+            sender_name = context.get("sender_name", "Unknown")
+            cc_list = context.get("cc_list", [])
+            source = context.get("source", "email")
+            
+            executor = MessageDelivery(message_content, source, sender_name, cc_list)
+            subtask.output = executor.execute()
+            subtask.status = TaskStatus.COMPLETED
+            task.subtasks.append(subtask)
+            
+        elif "response" in purpose_lower or "answer" in purpose_lower or "formulate" in purpose_lower:
             subtask = self._create_subtask(task.task_id, "qna", "Formulate response")
             executor = QnA(message_content, project, context, self.gemini_client)
             subtask.output = executor.execute()
@@ -116,19 +128,7 @@ class CommunicationCollaborationCoordinator(L2Coordinator):
             
         elif "report" in purpose_lower:
             subtask = self._create_subtask(task.task_id, "report_generation", "Generate report")
-            executor = ReportGeneration(message_content, project)
-            subtask.output = executor.execute()
-            subtask.status = TaskStatus.COMPLETED
-            task.subtasks.append(subtask)
-            
-        elif "send" in purpose_lower or "deliver" in purpose_lower:
-            subtask = self._create_subtask(task.task_id, "message_delivery", "Send message")
-            # Get sender info from context
-            sender_name = context.get("sender_name", "Unknown")
-            cc_list = context.get("cc_list", [])
-            source = context.get("source", "email")
-            
-            executor = MessageDelivery(message_content, source, sender_name, cc_list)
+            executor = ReportGeneration(message_content, project, context)
             subtask.output = executor.execute()
             subtask.status = TaskStatus.COMPLETED
             task.subtasks.append(subtask)

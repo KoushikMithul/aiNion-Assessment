@@ -35,26 +35,31 @@ class GeminiClient:
         if not self.model:
             return self._fallback_intent_analysis(message_content)
         
-        prompt = f"""Analyze this message and identify the primary intent.
+        prompt = f"""You are Nion, an expert AI Technical Program Manager. Analyze the following project message with high precision.
 
 Message: "{message_content}"
 Sender Role: {sender_role}
 Source: {source}
 
-Classify the intent as one of:
-- status_query: Asking about current status or progress
-- feasibility_query: Asking if something can be done
-- decision_request: Requesting a decision or recommendation
-- escalation: Urgent issue or escalation
-- meeting_update: Meeting transcript or update
-- general_request: General communication
+### Instructions
+1. **Classify Intent**: Choose exactly one of the following:
+   - `status_query`: Asking about progress, dates, or specific feature states.
+   - `feasibility_query`: Asking if a feature/change is possible within constraints.
+   - `decision_request`: Asking for a choice between options or a go/no-go.
+   - `escalation`: High-stress communication, legal threats, or angry stakeholders.
+   - `meeting_update`: Transcript, minutes, or summary of a discussion.
+   - `general_request`: Generic communication not fitting the above.
 
-Also identify:
-- Has action items: yes/no
-- Has risks: yes/no
-- Has issues: yes/no
-- Has decisions: yes/no
-- Urgency level: low/medium/high
+2. **Assess Urgency**:
+   - `high`: Legal threats, production downtime, angry client, or immediate blockers.
+   - `medium`: Scope changes, tight deadlines, or important questions.
+   - `low`: General info sharing or non-time-sensitive items.
+
+3. **Identify Flags**:
+   - `has_action_items`: Explicit requests to perform a task.
+   - `has_risks`: Mentions of delays, scope creep, budget issues, or blockers.
+   - `has_issues`: Mentions of bugs, failures, or broken processes.
+   - `has_decisions`: Questions requiring a choice or approval.
 
 Respond ONLY with valid JSON in this exact format:
 {{
@@ -64,7 +69,7 @@ Respond ONLY with valid JSON in this exact format:
   "has_issues": true/false,
   "has_decisions": true/false,
   "urgency": "low/medium/high",
-  "reasoning": "brief explanation"
+  "reasoning": "Explain clearly why you classified the urgency and flags this way."
 }}"""
         
         try:
@@ -83,14 +88,17 @@ Respond ONLY with valid JSON in this exact format:
         except Exception as e:
             print(f"Warning: Gemini API error: {e}")
             print("Falling back to rule-based reasoning...")
-            return self._fallback_intent_analysis(message_content)
+            return self._fallback_intent_analysis(message_content, source)
     
-    def _fallback_intent_analysis(self, content: str) -> Dict[str, Any]:
+    def _fallback_intent_analysis(self, content: str, source: str = "") -> Dict[str, Any]:
         """Fallback rule-based intent analysis when API is not available"""
         content_lower = content.lower()
+        source_lower = source.lower() if source else ""
         
-        # Determine intent
-        if "?" in content and ("status" in content_lower or "what" in content_lower):
+        # Determine intent (check meeting first before escalation keywords)
+        if source_lower == "meeting" or "meeting" in content_lower or "transcript" in content_lower or "demo" in content_lower:
+            intent = "meeting_update"
+        elif "?" in content and ("status" in content_lower or "what" in content_lower):
             intent = "status_query"
         elif "?" in content and ("can we" in content_lower or "should we" in content_lower):
             intent = "feasibility_query"
@@ -98,8 +106,6 @@ Respond ONLY with valid JSON in this exact format:
             intent = "decision_request"
         elif "blocked" in content_lower or "urgent" in content_lower or "escalate" in content_lower or "threat" in content_lower:
             intent = "escalation"
-        elif "meeting" in content_lower or "transcript" in content_lower or "demo" in content_lower:
-            intent = "meeting_update"
         else:
             intent = "general_request"
         
@@ -118,21 +124,62 @@ Respond ONLY with valid JSON in this exact format:
         if not self.model:
             return None  # Use default response generation
         
-        prompt = f"""You are Nion, an AI Program Manager. Generate a professional, gap-aware response.
+        # Helper to format list items into strings
+        def format_list(items):
+            if not items:
+                return "None"
+            return "\n  - ".join([str(item) for item in items])
+
+        # Prepare context strings
+        knowledge_info = format_list(context.get('knowledge', []))
+        action_items_info = format_list(context.get('action_items', []))
+        risks_info = format_list(context.get('risks', []))
+        decisions_info = format_list(context.get('decisions', []))
+        
+        prompt = f"""You are Nion, an advanced AI Program Manager. 
+Generate a professional, structured, and gap-aware response using the following EXACT format:
 
 Original Message: "{message_content}"
 
-Context Available:
-- Action Items: {len(context.get('action_items', []))} logged
-- Risks: {len(context.get('risks', []))} identified
-- Decisions: {len(context.get('decisions', []))} pending
-- Project Info: {context.get('knowledge', ['Limited context'])[0] if context.get('knowledge') else 'Unknown'}
+### Context Available
+- **Project Info**: 
+  {knowledge_info}
+- **Action Items**: 
+  {action_items_info}
+- **Risks**: 
+  {risks_info}
+- **Decisions**: 
+  {decisions_info}
 
-Generate a response that:
-1. Acknowledges what you know
-2. States what you've logged/tracked
-3. Clearly identifies what information is missing
-4. Is professional and concise
+### Response Format (REQUIRED STRUCTURE)
+Generate your response in this exact format:
+
+[Opening acknowledgment of the request]
+
+WHAT I KNOW:
+• [List specific project data: timeline, progress, capacity, team members, etc.]
+• [Include all relevant information from project context]
+• [Be specific with dates, percentages, and names]
+
+WHAT I'VE LOGGED:
+• [List action items with their details and flags]
+• [List risks with likelihood and impact]
+• [List decisions with status]
+• [Be concrete about what has been tracked]
+
+WHAT I NEED:
+• [List specific missing information needed to answer fully]
+• [Mention specific people who should provide input]
+• [Be clear about why this information is needed]
+
+[Closing statement explaining how the missing info will help]
+
+### Guidelines
+1. Keep the three sections clearly separated with the exact headers above
+2. Use bullet points (•) for all items
+3. Be specific with data (dates, percentages, names)
+4. Make "WHAT I NEED" actionable and specific
+5. Professional, concise tone
 
 Response (plain text, no JSON):"""
         

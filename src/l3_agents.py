@@ -227,30 +227,37 @@ class QnA(L3AgentExecutor):
         if "?" in self.message_content:
             response_parts.append("Response: \"Regarding your question:")
             response_parts.append("")
-            response_parts.append("  WHAT I KNOW:")
+            response_parts.append("WHAT I KNOW:")
             
             if self.context.get("knowledge"):
-                for item in self.context["knowledge"][:4]:
-                    response_parts.append(f"  • {item}")
+                for item in self.context["knowledge"]:
+                    response_parts.append(f"• {item}")
             else:
-                response_parts.append("  • Limited project context available")
+                response_parts.append("• Limited project context available")
             
             response_parts.append("")
-            response_parts.append("  WHAT I'VE LOGGED:")
+            response_parts.append("WHAT I'VE LOGGED:")
             
             if self.context.get("action_items"):
-                response_parts.append(f"  • {len(self.context['action_items'])} action items logged")
+                count = len(self.context['action_items'])
+                response_parts.append(f"• {count} action item{'s' if count != 1 else ''} extracted and tracked")
             if self.context.get("risks"):
-                response_parts.append(f"  • {len(self.context['risks'])} risks flagged")
+                count = len(self.context['risks'])
+                response_parts.append(f"• {count} risk{'s' if count != 1 else ''} identified and flagged")
             if self.context.get("decisions"):
-                response_parts.append(f"  • {len(self.context['decisions'])} decisions pending")
+                count = len(self.context['decisions'])
+                response_parts.append(f"• {count} decision{'s' if count != 1 else ''} pending approval")
+            
+            if not any([self.context.get("action_items"), self.context.get("risks"), self.context.get("decisions")]):
+                response_parts.append("• No action items, risks, or decisions logged yet")
             
             response_parts.append("")
-            response_parts.append("  WHAT I NEED:")
-            response_parts.append("  • Additional context from relevant stakeholders")
-            response_parts.append("  • Clarification on specific requirements or constraints")
+            response_parts.append("WHAT I NEED:")
+            response_parts.append("• Additional context from relevant stakeholders")
+            response_parts.append("• Clarification on specific requirements or constraints")
+            response_parts.append("• Technical feasibility assessment from Engineering team")
             response_parts.append("")
-            response_parts.append("  I will provide a more complete answer once I have the above information.\"")
+            response_parts.append("I will provide a more complete answer once I have the above information.\"")
         else:
             response_parts.append("Response: \"Message acknowledged and processed.\"")
         
@@ -300,13 +307,65 @@ class MessageDelivery(L3AgentExecutor):
 class ReportGeneration(L3AgentExecutor):
     """Generates formatted reports"""
     
+    def __init__(self, message_content: str, project: str, context: Dict[str, Any] = None):
+        super().__init__(message_content, project)
+        self.context = context or {}
+    
     def execute(self) -> List[str]:
-        return [
-            "Report Type: Status Summary",
-            "Format: Structured text",
-            "Sections: Overview, Action Items, Risks, Next Steps",
-            "Status: Generated successfully"
-        ]
+        report_parts = ["Meeting Summary Report", ""]
+        
+        # Meeting Overview
+        report_parts.append("MEETING OVERVIEW:")
+        report_parts.append(f"• Project: {self.project}")
+        report_parts.append(f"• Source: Meeting transcript")
+        
+        # Count participants from message content
+        participant_count = self.message_content.count(":")
+        if participant_count > 0:
+            report_parts.append(f"• Participants: {participant_count}")
+        
+        report_parts.append("")
+        
+        # Key Items Logged
+        report_parts.append("KEY ITEMS LOGGED:")
+        
+        action_items = self.context.get('action_items', [])
+        if action_items:
+            report_parts.append(f"• {len(action_items)} action item(s) extracted")
+            for item in action_items:
+                if isinstance(item, str):
+                    report_parts.append(f"  - {item}")
+        
+        issues = self.context.get('issues', [])
+        if issues:
+            report_parts.append(f"• {len(issues)} issue(s) identified")
+            for item in issues:
+                if isinstance(item, str):
+                    report_parts.append(f"  - {item}")
+        
+        decisions = self.context.get('decisions', [])
+        if decisions:
+            report_parts.append(f"• {len(decisions)} decision(s) logged")
+            for item in decisions:
+                if isinstance(item, str):
+                    report_parts.append(f"  - {item}")
+        elif 'decisions' in self.context:
+            report_parts.append("• No explicit decisions identified")
+        
+        report_parts.append("")
+        
+        # Next Steps (derived from issues and action items)
+        report_parts.append("NEXT STEPS:")
+        if issues:
+            report_parts.append("• Address critical issues identified in the meeting")
+        if action_items:
+            report_parts.append("• Complete action items with assigned owners and due dates")
+        if decisions:
+            report_parts.append("• Finalize pending decisions")
+        if not any([issues, action_items, decisions]):
+            report_parts.append("• Follow up on meeting discussion points")
+        
+        return report_parts
 
 
 class MeetingAttendance(L3AgentExecutor):

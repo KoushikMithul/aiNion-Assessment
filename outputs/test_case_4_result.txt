@@ -1,0 +1,98 @@
+Generated: 2025-12-07 13:20:10
+Input: test_cases/test_case_4.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-104
+From: System (Meeting Bot)
+Project: PRJ-ALPHA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:COMMUNICATION_COLLABORATION
+Purpose: Process meeting transcript
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from meeting
+
+[TASK-003] → L2:TRACKING_EXECUTION
+Purpose: Extract issues from meeting
+
+[TASK-004] → L2:TRACKING_EXECUTION
+Purpose: Extract decisions from meeting
+
+[TASK-005] → L2:COMMUNICATION_COLLABORATION
+Purpose: Generate meeting summary report
+Depends On: TASK-001, TASK-002, TASK-003, TASK-004
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-001-A] L3:meeting_attendance
+    Status: COMPLETED
+    Output:
+    • Meeting transcript processed
+    • Participants identified: 4
+    • Key topics extracted: 3
+    • Minutes generated successfully
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-003] L2:TRACKING_EXECUTION
+└─▶ [TASK-003-A] L3:issue_extraction
+    Status: COMPLETED
+    Output:
+    • ISSUE-001: "Blocked identified in message"
+      Severity: CRITICAL | Status: OPEN
+    • ISSUE-002: "Down identified in message"
+      Severity: CRITICAL | Status: OPEN
+    • ISSUE-003: "Bug identified in message"
+      Severity: HIGH | Status: OPEN
+
+[TASK-004] L2:TRACKING_EXECUTION
+└─▶ [TASK-004-A] L3:decision_extraction
+    Status: COMPLETED
+    Output:
+    • No explicit decisions identified
+
+[TASK-005] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-005-A] L3:report_generation
+    Status: COMPLETED
+    Output:
+    • Meeting Summary Report
+    • 
+    • MEETING OVERVIEW:
+    • Project: PRJ-ALPHA
+    • Source: Meeting transcript
+    • Participants: 4
+    • 
+    • KEY ITEMS LOGGED:
+    • 1 action item(s) extracted
+    •   - AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+    • 3 issue(s) identified
+    •   - ISSUE-001: "Blocked identified in message"
+      Severity: CRITICAL | Status: OPEN
+    •   - ISSUE-002: "Down identified in message"
+      Severity: CRITICAL | Status: OPEN
+    •   - ISSUE-003: "Bug identified in message"
+      Severity: HIGH | Status: OPEN
+    • 1 decision(s) logged
+    •   - No explicit decisions identified
+    • 
+    • NEXT STEPS:
+    • Address critical issues identified in the meeting
+    • Complete action items with assigned owners and due dates
+    • Finalize pending decisions
+
+======================================================================

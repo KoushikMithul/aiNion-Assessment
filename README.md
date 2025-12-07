@@ -65,26 +65,42 @@ python3 main.py test_cases/test_case_1.json
 
 ## 📋 Usage
 
-### Run Individual Test Cases
+### Run Test Cases
+
+```bash
+# Run a single test case (with full path)
+python3 main.py test_cases/test_case_1.json
+
+# Run a single test case (by name only)
+python3 main.py test_case_1
+
+# Run multiple specific test cases
+python3 main.py test_case_1 test_case_3 test_case_6
+
+# Run ALL test cases automatically
+python3 main.py --all
+```
+
+### Individual Test Cases
 
 ```bash
 # Test 1: Simple status question
-python3 main.py test_cases/test_case_1.json
+python3 main.py test_case_1
 
 # Test 2: Feasibility question (new features)
-python3 main.py test_cases/test_case_2.json
+python3 main.py test_case_2
 
 # Test 3: Decision/recommendation request
-python3 main.py test_cases/test_case_3.json
+python3 main.py test_case_3
 
 # Test 4: Meeting transcript
-python3 main.py test_cases/test_case_4.json
+python3 main.py test_case_4
 
 # Test 5: Urgent escalation
-python3 main.py test_cases/test_case_5.json
+python3 main.py test_case_5
 
 # Test 6: Ambiguous request
-python3 main.py test_cases/test_case_6.json
+python3 main.py test_case_6
 ```
 
 ### Run Your Own Test Case
@@ -175,33 +191,762 @@ graph TD
 
 ```
 Assessment/
-├── main.py                          # Entry point
+├── main.py                          # Entry point with multiple run modes
 ├── requirements.txt                 # Python dependencies
 ├── README.md                        # This file
 ├── .env.example                     # Environment variables template
+├── .env                             # Your actual API key (not tracked in git)
 ├── .gitignore                       # Git ignore rules
+├── assessment_requirements.txt      # Extracted requirements from PDF
+├── Peeku-Nion Orchestration Internship Assessment.pdf  # Original assessment
 ├── src/
+│   ├── __init__.py                  # Package initializer
 │   ├── models.py                    # Data models (InputMessage, Task, etc.)
 │   ├── agents.py                    # Agent registry and visibility rules
+│   ├── gemini_client.py             # Google Gemini AI integration
 │   ├── l1_orchestrator.py           # L1 reasoning and planning logic
 │   ├── l2_coordinators.py           # L2 coordinator implementations
-│   ├── l3_agents.py                 # L3 agent implementations
+│   ├── l3_agents.py                 # L3 agent implementations (14+ agents)
 │   ├── orchestration_engine.py      # Main orchestration coordinator
 │   └── output_formatter.py          # Output formatting
 ├── test_cases/
-│   ├── test_case_1.json
-│   ├── test_case_2.json
-│   ├── test_case_3.json
-│   ├── test_case_4.json
-│   ├── test_case_5.json
-│   └── test_case_6.json
+│   ├── test_case_1.json             # Status query test
+│   ├── test_case_2.json             # Feasibility query test
+│   ├── test_case_3.json             # Decision request test
+│   ├── test_case_4.json             # Meeting transcript test
+│   ├── test_case_5.json             # Urgent escalation test
+│   └── test_case_6.json             # Ambiguous request test
 └── outputs/
-    ├── output_1.txt
-    ├── output_2.txt
-    ├── output_3.txt
-    ├── output_4.txt
-    ├── output_5.txt
-    └── output_6.txt
+    ├── .gitkeep                     # Keeps directory in git
+    ├── test_case_1_result.txt       # Auto-generated output for test 1
+    ├── test_case_2_result.txt       # Auto-generated output for test 2
+    ├── test_case_3_result.txt       # Auto-generated output for test 3
+    ├── test_case_4_result.txt       # Auto-generated output for test 4
+    ├── test_case_5_result.txt       # Auto-generated output for test 5
+    └── test_case_6_result.txt       # Auto-generated output for test 6
+```
+
+## 📊 Mock Project Database
+
+The system uses consistent mock data for demonstration purposes:
+
+```python
+PROJECT_DB = {
+    "PRJ-ALPHA": {
+        "release_date": "Dec 15, 2025",
+        "code_freeze": "Dec 10, 2025",
+        "days_remaining": 9,
+        "progress": 70,
+        "capacity": 85,
+        "eng_manager": "Alex Kim",
+        "tech_lead": "David Park"
+    },
+    "PRJ-BETA": {
+        "release_date": "Jan 10, 2026",
+        "code_freeze": "Jan 5, 2026",
+        "days_remaining": 35,
+        "progress": 65,
+        "capacity": 80,
+        "eng_manager": "Sarah Johnson",
+        "tech_lead": "Emily Zhang"
+    },
+    "PRJ-GAMMA": {
+        "release_date": "Jan 20, 2026",
+        "code_freeze": "Jan 15, 2026",
+        "days_remaining": 45,
+        "progress": 55,
+        "capacity": 75,
+        "eng_manager": "Mike Chen",
+        "tech_lead": "Robert Liu"
+    },
+    "PRJ-DELTA": {
+        "release_date": "Feb 1, 2026",
+        "code_freeze": "Jan 25, 2026",
+        "days_remaining": 57,
+        "progress": 40,
+        "capacity": 70,
+        "eng_manager": "Lisa Wong",
+        "tech_lead": "James Park"
+    }
+}
+```
+
+## 📝 Complete Test Case Outputs
+
+All outputs are automatically saved to `outputs/test_case_X_result.txt` with timestamps.
+
+### Test Case 1: Simple Status Query
+
+**Input:**
+```json
+{
+  "message_id": "MSG-101",
+  "source": "slack",
+  "sender": { "name": "John Doe", "role": "Engineering Manager" },
+  "content": "What's the status of the authentication feature?",
+  "project": "PRJ-BETA"
+}
+```
+
+**Complete Output:**
+```
+Generated: 2025-12-07 13:20:08
+Input: test_cases/test_case_1.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-101
+From: John Doe (Engineering Manager)
+Project: PRJ-BETA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L3:knowledge_retrieval
+Purpose: Retrieve project context and current status
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Retrieve tracked action items and status
+
+[TASK-003] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate status response
+Depends On: TASK-001, TASK-002
+
+[TASK-004] → L2:COMMUNICATION_COLLABORATION
+Purpose: Send response to sender
+Depends On: TASK-003
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Project: PRJ-BETA
+• Current Release Date: Jan 10, 2026
+• Days Remaining: 35
+• Code Freeze: Jan 5, 2026
+• Current Progress: 65%
+• Team Capacity: 80% utilized
+• Engineering Manager: Sarah Johnson
+• Tech Lead: Emily Zhang
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-003] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-003-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Regarding your question:
+    • 
+    • WHAT I KNOW:
+    • Project: PRJ-BETA
+    • Current Release Date: Jan 10, 2026
+    • Days Remaining: 35
+    • Code Freeze: Jan 5, 2026
+    • Current Progress: 65%
+    • Team Capacity: 80% utilized
+    • Engineering Manager: Sarah Johnson
+    • Tech Lead: Emily Zhang
+    • 
+    • WHAT I'VE LOGGED:
+    • 1 action item extracted and tracked
+    • 
+    • WHAT I NEED:
+    • Additional context from relevant stakeholders
+    • Clarification on specific requirements or constraints
+    • Technical feasibility assessment from Engineering team
+    • 
+    • I will provide a more complete answer once I have the above information."
+
+[TASK-004] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-004-A] L3:message_delivery
+    Status: COMPLETED
+    Output:
+    • Channel: slack
+    • Recipient: John Doe
+    • Delivery Status: SENT
+
+======================================================================
+```
+
+---
+
+### Test Case 2: Feasibility Query
+
+**Input:**
+```json
+{
+  "message_id": "MSG-102",
+  "source": "email",
+  "sender": { "name": "Sarah Chen", "role": "Product Manager" },
+  "content": "Can we add SSO integration before the December release?",
+  "project": "PRJ-ALPHA"
+}
+```
+
+**Complete Output:**
+```
+Generated: 2025-12-07 13:20:09
+Input: test_cases/test_case_2.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-102
+From: Sarah Chen (Product Manager)
+Project: PRJ-ALPHA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from request
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Extract risks from request
+
+[TASK-003] → L2:TRACKING_EXECUTION
+Purpose: Extract decision needed
+
+[TASK-004] → L3:knowledge_retrieval
+Purpose: Retrieve project context and timeline
+
+[TASK-005] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate gap-aware response
+Depends On: TASK-001, TASK-002, TASK-003, TASK-004
+
+[TASK-006] → L3:evaluation
+Purpose: Evaluate response before sending
+Depends On: TASK-005
+
+[TASK-007] → L2:COMMUNICATION_COLLABORATION
+Purpose: Send response to sender
+Depends On: TASK-006
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:TRACKING_EXECUTION
+└─▶ [TASK-001-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Extract from message: add related task"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:risk_extraction
+    Status: COMPLETED
+    Output:
+    • RISK-001: "Potential communication gap or unclear requirements"
+      Likelihood: LOW | Impact: MEDIUM
+
+[TASK-003] L2:TRACKING_EXECUTION
+└─▶ [TASK-003-A] L3:decision_extraction
+    Status: COMPLETED
+    Output:
+    • DEC-001: "Decision needed: can we scenario"
+      Decision Maker: ? | Status: PENDING
+
+[TASK-004] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Project: PRJ-ALPHA
+• Current Release Date: Dec 15, 2025
+• Days Remaining: 9
+• Code Freeze: Dec 10, 2025
+• Current Progress: 70%
+• Team Capacity: 85% utilized
+• Engineering Manager: Alex Kim
+• Tech Lead: David Park
+
+[TASK-005] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-005-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Regarding your question:
+    • 
+    • WHAT I KNOW:
+    • Project: PRJ-ALPHA
+    • Current Release Date: Dec 15, 2025
+    • Days Remaining: 9
+    • Code Freeze: Dec 10, 2025
+    • Current Progress: 70%
+    • Team Capacity: 85% utilized
+    • Engineering Manager: Alex Kim
+    • Tech Lead: David Park
+    • 
+    • WHAT I'VE LOGGED:
+    • 1 action item extracted and tracked
+    • 1 risk identified and flagged
+    • 1 decision pending approval
+    • 
+    • WHAT I NEED:
+    • Additional context from relevant stakeholders
+    • Clarification on specific requirements or constraints
+    • Technical feasibility assessment from Engineering team
+    • 
+    • I will provide a more complete answer once I have the above information."
+
+[TASK-006] L3:evaluation (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Relevance: PASS
+• Accuracy: PASS
+• Tone: PASS
+• Gaps Acknowledged: PASS
+• Result: APPROVED
+
+[TASK-007] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-007-A] L3:message_delivery
+    Status: COMPLETED
+    Output:
+    • Channel: email
+    • Recipient: Sarah Chen
+    • Delivery Status: SENT
+
+======================================================================
+```
+
+---
+
+### Test Case 3: Decision Request
+
+**Input:**
+```json
+{
+  "message_id": "MSG-103",
+  "source": "email",
+  "sender": { "name": "Mike Johnson", "role": "VP Engineering" },
+  "content": "Should we prioritize security fixes or the new dashboard?",
+  "project": "PRJ-GAMMA"
+}
+```
+
+**Complete Output:**
+```
+Generated: 2025-12-07 13:20:09
+Input: test_cases/test_case_3.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-103
+From: Mike Johnson (VP Engineering)
+Project: PRJ-GAMMA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from request
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Extract risks from request
+
+[TASK-003] → L2:TRACKING_EXECUTION
+Purpose: Extract decision needed
+
+[TASK-004] → L3:knowledge_retrieval
+Purpose: Retrieve project context and timeline
+
+[TASK-005] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate gap-aware response
+Depends On: TASK-001, TASK-002, TASK-003, TASK-004
+
+[TASK-006] → L3:evaluation
+Purpose: Evaluate response before sending
+Depends On: TASK-005
+
+[TASK-007] → L2:COMMUNICATION_COLLABORATION
+Purpose: Send response to sender
+Depends On: TASK-006
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:TRACKING_EXECUTION
+└─▶ [TASK-001-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Extract from message: fix related task"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:risk_extraction
+    Status: COMPLETED
+    Output:
+    • RISK-001: "Potential communication gap or unclear requirements"
+      Likelihood: LOW | Impact: MEDIUM
+
+[TASK-003] L2:TRACKING_EXECUTION
+└─▶ [TASK-003-A] L3:decision_extraction
+    Status: COMPLETED
+    Output:
+    • DEC-001: "Decision needed: should we scenario"
+      Decision Maker: ? | Status: PENDING
+    • DEC-002: "Decision needed: prioritize scenario"
+      Decision Maker: ? | Status: PENDING
+
+[TASK-004] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Project: PRJ-GAMMA
+• Current Release Date: Jan 20, 2026
+• Days Remaining: 45
+• Code Freeze: Jan 15, 2026
+• Current Progress: 55%
+• Team Capacity: 75% utilized
+• Engineering Manager: Mike Chen
+• Tech Lead: Robert Liu
+
+[TASK-005] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-005-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Regarding your question:
+    • 
+    • WHAT I KNOW:
+    • Project: PRJ-GAMMA
+    • Current Release Date: Jan 20, 2026
+    • Days Remaining: 45
+    • Code Freeze: Jan 15, 2026
+    • Current Progress: 55%
+    • Team Capacity: 75% utilized
+    • Engineering Manager: Mike Chen
+    • Tech Lead: Robert Liu
+    • 
+    • WHAT I'VE LOGGED:
+    • 1 action item extracted and tracked
+    • 1 risk identified and flagged
+    • 2 decisions pending approval
+    • 
+    • WHAT I NEED:
+    • Additional context from relevant stakeholders
+    • Clarification on specific requirements or constraints
+    • Technical feasibility assessment from Engineering team
+    • 
+    • I will provide a more complete answer once I have the above information."
+
+[TASK-006] L3:evaluation (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Relevance: PASS
+• Accuracy: PASS
+• Tone: PASS
+• Gaps Acknowledged: PASS
+• Result: APPROVED
+
+[TASK-007] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-007-A] L3:message_delivery
+    Status: COMPLETED
+    Output:
+    • Channel: email
+    • Recipient: Mike Johnson
+    • Delivery Status: SENT
+
+======================================================================
+```
+
+---
+
+### Test Case 4: Meeting Transcript
+
+**Input:**
+```json
+{
+  "message_id": "MSG-104",
+  "source": "meeting",
+  "sender": { "name": "System", "role": "Meeting Bot" },
+  "content": "Dev: I'm blocked on API integration, staging is down. QA: Found 3 critical bugs in payment flow. Designer: Mobile mockups ready by Thursday. Tech Lead: We might need to refactor the auth module.",
+  "project": "PRJ-ALPHA"
+}
+```
+
+**Complete Output:**
+```
+Generated: 2025-12-07 13:20:10
+Input: test_cases/test_case_4.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-104
+From: System (Meeting Bot)
+Project: PRJ-ALPHA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:COMMUNICATION_COLLABORATION
+Purpose: Process meeting transcript
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from meeting
+
+[TASK-003] → L2:TRACKING_EXECUTION
+Purpose: Extract issues from meeting
+
+[TASK-004] → L2:TRACKING_EXECUTION
+Purpose: Extract decisions from meeting
+
+[TASK-005] → L2:COMMUNICATION_COLLABORATION
+Purpose: Generate meeting summary report
+Depends On: TASK-001, TASK-002, TASK-003, TASK-004
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-001-A] L3:meeting_attendance
+    Status: COMPLETED
+    Output:
+    • Meeting transcript processed
+    • Participants identified: 4
+    • Key topics extracted: 3
+    • Minutes generated successfully
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-003] L2:TRACKING_EXECUTION
+└─▶ [TASK-003-A] L3:issue_extraction
+    Status: COMPLETED
+    Output:
+    • ISSUE-001: "Blocked identified in message"
+      Severity: CRITICAL | Status: OPEN
+    • ISSUE-002: "Down identified in message"
+      Severity: CRITICAL | Status: OPEN
+    • ISSUE-003: "Bug identified in message"
+      Severity: HIGH | Status: OPEN
+
+[TASK-004] L2:TRACKING_EXECUTION
+└─▶ [TASK-004-A] L3:decision_extraction
+    Status: COMPLETED
+    Output:
+    • No explicit decisions identified
+
+[TASK-005] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-005-A] L3:report_generation
+    Status: COMPLETED
+    Output:
+    • Meeting Summary Report
+    • 
+    • MEETING OVERVIEW:
+    • Project: PRJ-ALPHA
+    • Source: Meeting transcript
+    • Participants: 4
+    • 
+    • KEY ITEMS LOGGED:
+    • 1 action item(s) extracted
+    •   - AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+    • 3 issue(s) identified
+    •   - ISSUE-001: "Blocked identified in message"
+      Severity: CRITICAL | Status: OPEN
+    •   - ISSUE-002: "Down identified in message"
+      Severity: CRITICAL | Status: OPEN
+    •   - ISSUE-003: "Bug identified in message"
+      Severity: HIGH | Status: OPEN
+    • 1 decision(s) logged
+    •   - No explicit decisions identified
+    • 
+    • NEXT STEPS:
+    • Address critical issues identified in the meeting
+    • Complete action items with assigned owners and due dates
+    • Finalize pending decisions
+
+======================================================================
+```
+
+---
+
+### Test Case 5: Urgent Escalation
+
+**Input:**
+```json
+{
+  "message_id": "MSG-105",
+  "source": "email",
+  "sender": { "name": "Lisa Wong", "role": "Customer Success Manager" },
+  "content": "The client is asking why feature X promised for Q3 is still not delivered. They're threatening to escalate to legal. What happened?",
+  "project": "PRJ-DELTA"
+}
+```
+
+**Complete Output:**
+```
+Generated: 2025-12-07 13:20:10
+Input: test_cases/test_case_5.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-105
+From: Lisa Wong (Customer Success Manager)
+Project: PRJ-DELTA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L3:knowledge_retrieval
+Purpose: Retrieve project context and current status
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Retrieve tracked action items and status
+
+[TASK-003] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate status response
+Depends On: TASK-001, TASK-002
+
+[TASK-004] → L2:COMMUNICATION_COLLABORATION
+Purpose: Send response to sender
+Depends On: TASK-003
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Project: PRJ-DELTA
+• Current Release Date: Feb 1, 2026
+• Days Remaining: 57
+• Code Freeze: Jan 25, 2026
+• Current Progress: 40%
+• Team Capacity: 70% utilized
+• Engineering Manager: Lisa Wong
+• Tech Lead: James Park
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-003] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-003-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Regarding your question:
+    • 
+    • WHAT I KNOW:
+    • Project: PRJ-DELTA
+    • Current Release Date: Feb 1, 2026
+    • Days Remaining: 57
+    • Code Freeze: Jan 25, 2026
+    • Current Progress: 40%
+    • Team Capacity: 70% utilized
+    • Engineering Manager: Lisa Wong
+    • Tech Lead: James Park
+    • 
+    • WHAT I'VE LOGGED:
+    • 1 action item extracted and tracked
+    • 
+    • WHAT I NEED:
+    • Additional context from relevant stakeholders
+    • Clarification on specific requirements or constraints
+    • Technical feasibility assessment from Engineering team
+    • 
+    • I will provide a more complete answer once I have the above information."
+
+[TASK-004] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-004-A] L3:message_delivery
+    Status: COMPLETED
+    Output:
+    • Channel: email
+    • Recipient: Lisa Wong
+    • Delivery Status: SENT
+
+======================================================================
+```
+
+---
+
+### Test Case 6: Ambiguous Request
+
+**Input:**
+```json
+{
+  "message_id": "MSG-106",
+  "source": "slack",
+  "sender": { "name": "Random User", "role": "Unknown" },
+  "content": "We need to speed things up",
+  "project": null
+}
+```
+
+**Complete Output:**
+```
+Generated: 2025-12-07 13:20:10
+Input: test_cases/test_case_6.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-106
+From: Random User (Unknown)
+Project: N/A
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L2:TRACKING_EXECUTION
+Purpose: Extract action items from message
+
+[TASK-002] → L3:knowledge_retrieval
+Purpose: Retrieve project context
+
+[TASK-003] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate acknowledgment response
+Depends On: TASK-001, TASK-002
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L2:TRACKING_EXECUTION
+└─▶ [TASK-001-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-002] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• No project context available
+• Unable to retrieve specific project details
+
+[TASK-003] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-003-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Message acknowledged and processed."
+
+======================================================================
 ```
 
 ## Output Format

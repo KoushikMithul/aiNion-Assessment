@@ -1,0 +1,86 @@
+Generated: 2025-12-07 13:20:08
+Input: test_cases/test_case_1.json
+======================================================================
+
+======================================================================
+NION ORCHESTRATION MAP
+======================================================================
+Message: MSG-101
+From: John Doe (Engineering Manager)
+Project: PRJ-BETA
+
+======================================================================
+L1 PLAN
+======================================================================
+[TASK-001] → L3:knowledge_retrieval
+Purpose: Retrieve project context and current status
+
+[TASK-002] → L2:TRACKING_EXECUTION
+Purpose: Retrieve tracked action items and status
+
+[TASK-003] → L2:COMMUNICATION_COLLABORATION
+Purpose: Formulate status response
+Depends On: TASK-001, TASK-002
+
+[TASK-004] → L2:COMMUNICATION_COLLABORATION
+Purpose: Send response to sender
+Depends On: TASK-003
+
+======================================================================
+L2/L3 EXECUTION
+======================================================================
+
+[TASK-001] L3:knowledge_retrieval (Cross-Cutting)
+Status: COMPLETED
+Output:
+• Project: PRJ-BETA
+• Current Release Date: Jan 10, 2026
+• Days Remaining: 35
+• Code Freeze: Jan 5, 2026
+• Current Progress: 65%
+• Team Capacity: 80% utilized
+• Engineering Manager: Sarah Johnson
+• Tech Lead: Emily Zhang
+
+[TASK-002] L2:TRACKING_EXECUTION
+└─▶ [TASK-002-A] L3:action_item_extraction
+    Status: COMPLETED
+    Output:
+    • AI-001: "Follow up on message content"
+      Owner: ? | Due: ? | Flags: [MISSING_OWNER, MISSING_DUE_DATE]
+
+[TASK-003] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-003-A] L3:qna
+    Status: COMPLETED
+    Output:
+    • Response: "Regarding your question:
+    • 
+    • WHAT I KNOW:
+    • Project: PRJ-BETA
+    • Current Release Date: Jan 10, 2026
+    • Days Remaining: 35
+    • Code Freeze: Jan 5, 2026
+    • Current Progress: 65%
+    • Team Capacity: 80% utilized
+    • Engineering Manager: Sarah Johnson
+    • Tech Lead: Emily Zhang
+    • 
+    • WHAT I'VE LOGGED:
+    • 1 action item extracted and tracked
+    • 
+    • WHAT I NEED:
+    • Additional context from relevant stakeholders
+    • Clarification on specific requirements or constraints
+    • Technical feasibility assessment from Engineering team
+    • 
+    • I will provide a more complete answer once I have the above information."
+
+[TASK-004] L2:COMMUNICATION_COLLABORATION
+└─▶ [TASK-004-A] L3:message_delivery
+    Status: COMPLETED
+    Output:
+    • Channel: slack
+    • Recipient: John Doe
+    • Delivery Status: SENT
+
+======================================================================
